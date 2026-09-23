@@ -1,0 +1,13 @@
+{
+  "name": "caveman-lite",
+  "description": "Just the core caveman skill from JuliusBrussee/caveman, auto-synced.",
+  "owner": { "name": "Lucas Dikany" },
+  "plugins": [
+    {
+      "name": "caveman",
+      "description": "Talk like caveman. Cut filler. Keep technical details explicit.",
+      "source": "./plugins/caveman",
+      "category": "productivity"
+    }
+  ]
+}

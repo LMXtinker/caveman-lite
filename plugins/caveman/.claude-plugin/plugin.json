@@ -2,5 +2,8 @@
   "name": "caveman",
   "version": "2.7.0",
   "description": "Ultra-compressed communication mode (core skill only, mirrored from JuliusBrussee/caveman).",
-  "author": { "name": "Julius Brussee", "url": "https://github.com/JuliusBrussee" }
+  "author": {
+    "name": "Julius Brussee",
+    "url": "https://github.com/JuliusBrussee"
+  }
 }

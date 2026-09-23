@@ -1,0 +1,39 @@
+name: Sync caveman skill from upstream
+
+on:
+  schedule:
+    - cron: "0 4 * * *"   # daily 04:00 UTC
+  workflow_dispatch:       # manual "Run workflow" button
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest upstream release
+        id: rel
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(gh api repos/JuliusBrussee/caveman/releases/latest --jq .tag_name)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Download SKILL.md at that release
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/JuliusBrussee/caveman/${{ steps.rel.outputs.tag }}/skills/caveman/SKILL.md" \
+            -o plugins/caveman/skills/caveman/SKILL.md
+          jq --arg v "${{ steps.rel.outputs.version }}" '.version = $v' plugins/caveman/.claude-plugin/plugin.json > p.tmp
+          mv p.tmp plugins/caveman/.claude-plugin/plugin.json
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet; then echo "No change"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Sync caveman ${{ steps.rel.outputs.tag }}"
+          git push
